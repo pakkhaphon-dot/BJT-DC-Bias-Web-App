@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BJT DC Bias — Voltage Divider Bias</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>BJT DC Bias Calculator</h1>
+<p>Voltage-Divider Bias &mdash; Common Emitter (NPN). All math computed by the Python backend.</p>
+</header>
+
+<section>
+<h2>1 &mdash; Enter component values</h2>
+<form method="POST" action="/calculate">
+<div class="grid">
+<div class="field">
+<label>VCC <span class="unit">(V)</span></label>
+<input type="text" name="vcc" value="{{ defaults.get('vcc', '') }}" required>
+</div>
+<div class="field">
+<label>R1 <span class="unit">(kΩ)</span></label>
+<input type="text" name="r1" value="{{ defaults.get('r1', '') }}" required>
+</div>
+<div class="field">
+<label>R2 <span class="unit">(k&Omega;)</span></label>
+<input type="text" name="r2" value="{{ defaults.get('r2', '') }}" required>
+</div>
+<div class="field">
+<label>RC <span class="unit">(k&Omega;)</span></label>
+<input type="text" name="rc" value="{{ defaults.get('rc', '') }}" required>
+</div>
+<div class="field">
+<label>RE <span class="unit">(k&Omega;)</span></label>
+<input type="text" name="re" value="{{ defaults.get('re', '') }}" required>
+</div>
+<div class="field">
+<label>&beta; <span class="unit">(unitless)</span></label>
+<input type="text" name="beta" value="{{ defaults.get('beta', '') }}" required>
+</div>
+<div class="field">
+<label>VBE <span class="unit">(V)</span></label>
+<input type="text" name="vbe" value="{{ defaults.get('vbe', '') }}" required>
+</div>
+</div>
+<button type="submit">Calculate DC Bias</button>
+</form>
+</section>
+
+{% if errors %}
+<section class="error">
+<h2>Errors</h2>
+<ul>
+{% for e in errors %}
+<li>{{ e }}</li>
+{% endfor %}
+</ul>
+</section>
+{% endif %}
+
+{% if results %}
+<section class="results">
+<h2>DC Bias Results</h2>
+<table>
+<tr><th>Quantity</th><th>Value</th><th>Unit</th></tr>
+<tr><td>Base current IB</td><td>{{ "%.3f" % (results["ib_a"] * 1000) }}</td><td>mA</td></tr>
+<tr><td>Collector current IC</td><td>{{ "%.3f" % (results["ic_a"] * 1000) }}</td><td>mA</td></tr>
+<tr><td>Emitter current IE</td><td>{{ "%.3f" % (results["ie_a"] * 1000) }}</td><td>mA</td></tr>
+<tr><td>Base voltage VB</td><td>{{ "%.3f" % results["vb_v"] }}</td><td>V</td></tr>
+<tr><td>Emitter voltage VE</td><td>{{ "%.3f" % results["ve_v"] }}</td><td>V</td></tr>
+<tr><td>Collector voltage VC</td><td>{{ "%.3f" % results["vc_v"] }}</td><td>V</td></tr>
+<tr><td>Collector-emitter VCE</td><td>{{ "%.3f" % results["vce_v"] }}</td><td>V</td></tr>
+<tr><td>Region</td><td><span class="badge {{ results["region"] | lower }}">{{ results["region"] }}</span></td><td>&mdash;</td></tr>
+</table>
+
+{% if warnings %}
+<div class="warning">
+<h3>Model limitation</h3>
+<ul>
+{% for w in warnings %}
+<li>{{ w }}</li>
+{% endfor %}
+</ul>
+</div>
+{% endif %}
+</section>
+{% endif %}
+
+<footer>
+<p>&copy; ENG29 2121 &mdash; Lab 02 BJT DC Bias Web App</p>
+</footer>
+</div>
+</body>
+</html>
